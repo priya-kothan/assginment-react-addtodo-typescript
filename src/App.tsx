@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import TodoList from "./component/TodoList";
+import TodoAdd from "./component/TodoAdd";
+import { useEffect, useState } from "react";
+import { type } from "./todoType";
+export default function App() {
+  const [items, setItems] = useState<type[]>([]);
+  const [count, setcount] = useState<number>(0);
+  const onaddHandler = (todoText: string) => {
+    setItems((prevTodos) => {
+      return [
+        ...prevTodos,
+        {
+          id: new Date().toISOString(),
+          name: todoText,
+          completed: true
+        }
+      ];
+    });
+    setcount(items.length + 1);
+  };
+
+  const removeHandler = (id: string) => {
+    const removeItems = items.map((el) => {
+      if (el.id === id) {
+        el.completed = false;
+        return el;
+      }
+      return el;
+    });
+
+    setItems(removeItems);
+    // setItems((prov) => {
+    //   return prov.filter((el) => el.id !== id);
+    // });
+    
+  };
+
+  useEffect(()=>{
+    let count = items.filter((el) => el.completed === true)?.length;
+    setcount(count);
+  },[items])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      adada
+      <TodoAdd addHandler={onaddHandler} />
+      {count ? count : 0}
+      <TodoList items={items} removeHandler={removeHandler} />
     </div>
   );
 }
-
-export default App;
